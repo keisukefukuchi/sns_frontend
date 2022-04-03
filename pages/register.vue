@@ -44,6 +44,19 @@ export default {
         .createUserWithEmailAndPassword(this.email, this.password)
         .then((data) => {
           data.user.sendEmailVerification().then(() => {
+            firebase.auth().onAuthStateChanged((user) => {
+              if(user) {
+                const uid = user.uid
+                const sendData = {
+                  name:this.name,
+                  email:this.email,
+                  password:this.password,
+                  uid:uid
+                };
+                console.log(sendData);
+                this.$axios.post("http://127.0.0.1:8000/api/v1/user", sendData);
+              }
+            });
             this.$router.replace('/login')
           })
         })
