@@ -103,3 +103,10 @@ hr {
 input, select {
     vertical-align:middle;
 }
+li {
+  list-style: none;
+}
+span {
+  color: white;
+  font-size: 20px;
+}
