@@ -11,17 +11,27 @@
         <a href="/login" @click="logout">ログアウト</a>
       </div>
       <h6 class="share">シェア</h6>
-      <textarea
-        name=""
-        id="text"
-        cols="40"
-        rows="7"
-        class="text"
-        v-model="newShare"
-      ></textarea>
-      <div class="share-button">
-        <button @click="insertContact">シェアする</button>
-      </div>
+      <validation-observer ref="obs" v-slot="ObserverProps">
+        <validation-provider v-slot="ProviderProps" rules="required|max:120">
+          <textarea
+            name=""
+            id="text"
+            cols="40"
+            rows="7"
+            class="text"
+            v-model="newShare"
+          ></textarea>
+          <div class="error">{{ ProviderProps.errors[0] }}</div>
+        </validation-provider>
+        <div class="share-button">
+          <button
+            @click="insertContact"
+            :disabled="ObserverProps.invalid || !ObserverProps.validated"
+          >
+            シェアする
+          </button>
+        </div>
+      </validation-observer>
     </div>
     <div class="share-right">
       <h1 class="share-home">ホーム</h1>
@@ -31,9 +41,12 @@
             {{ item.user.name }} : {{ item.message }}
           </p>
           <button class="pb_like tooltip">
-            <img @click="onLikeClick(item.id)" class="image like" src="heart.png"
+            <img
+              @click="onLikeClick(item.id)"
+              class="image like"
+              src="heart.png"
             />
-            <p class="like-num">{{item.like_count}}</p>
+            <p class="like-num">{{ item.like_count }}</p>
           </button>
           <button class="pb_del tooltip">
             <img
@@ -84,12 +97,12 @@ export default {
           this.$router.replace("/");
         });
     },
-    getUid(){
+    getUid() {
       firebase.auth().onAuthStateChanged((user) => {
-        if(user){
-          this.uid = user.uid
+        if (user) {
+          this.uid = user.uid;
         }
-      })
+      });
     },
     async getContact() {
       const resData = await this.$axios.get(
@@ -221,6 +234,9 @@ body {
 .lists {
   height: 500px;
   overflow: scroll;
+}
+.error {
+  color: red;
 }
 </style>
 
