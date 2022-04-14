@@ -11,7 +11,14 @@
         <a href="/login" @click="logout">ログアウト</a>
       </div>
       <h6 class="share">シェア</h6>
-      <textarea name="" id="text" cols="40" rows="7" class="text" v-model="newShare"></textarea>
+      <textarea
+        name=""
+        id="text"
+        cols="40"
+        rows="7"
+        class="text"
+        v-model="newShare"
+      ></textarea>
       <div class="share-button">
         <button @click="insertContact">シェアする</button>
       </div>
@@ -19,23 +26,30 @@
     <div class="share-right">
       <h1 class="share-home">ホーム</h1>
       <ul class="lists">
-          <li class="list-item" v-for="item in shareLists" :key="item.id">
-              <p class="user_name_content">{{item.user.name}} : {{item.message}}</p>
-              <button class="pb_like tooltip">
-                <img class="image like" src="heart.png">
-                <p class="like-num">1</p>
-              </button>
-              <button class="pb_del tooltip">
-                <img class="image del" src="cross.png">
-              </button>
-              <span class="comment-text">コメント:</span>
-              <button class="pb_detail tooltip">
-                <img class="image comment" src="detail.png">
-                <span class="comment-text">コメントを見る</span>
-              </button>
-              <p class="post-time">時間</p>
-          </li>
-        </ul>
+        <li class="list-item" v-for="item in shareLists" :key="item.id">
+          <p class="user_name_content">
+            {{ item.user.name }} : {{ item.message }}
+          </p>
+          <button class="pb_like tooltip">
+            <img @click="onLikeClick(item.id)" class="image like" src="heart.png"
+            />
+            <p class="like-num">{{item.like_count}}</p>
+          </button>
+          <button class="pb_del tooltip">
+            <img
+              @click="deleteShare(item.id)"
+              class="image del"
+              src="cross.png"
+            />
+          </button>
+          <span class="comment-text">コメント:</span>
+          <button class="pb_detail tooltip">
+            <img class="image comment" src="detail.png" />
+            <span class="comment-text">コメントを見る</span>
+          </button>
+          <p class="post-time">{{ item.created_at }}</p>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -49,8 +63,9 @@ export default {
     return {
       newShare: "",
       shareLists: [],
-
-    }
+      uid: "",
+      post_id: null,
+    };
   },
   created() {
     firebase.auth().onAuthStateChanged((user) => {
@@ -65,9 +80,16 @@ export default {
         .auth()
         .signOut()
         .then(() => {
-          alert('ログアウトが完了しました')
-          this.$router.replace('/')
-        })
+          alert("ログアウトが完了しました");
+          this.$router.replace("/");
+        });
+    },
+    getUid(){
+      firebase.auth().onAuthStateChanged((user) => {
+        if(user){
+          this.uid = user.uid
+        }
+      })
     },
     async getContact() {
       const resData = await this.$axios.get(
@@ -78,23 +100,33 @@ export default {
     },
     async insertContact() {
       await firebase.auth().onAuthStateChanged((user) => {
-        if(user && this.newShare.length <= 120){
-          const uid = user.uid
-          const sendData = {
-            message: this.newShare,
-            uid:uid,
-          };
-          console.log(sendData);
-          this.$axios.post("http://127.0.0.1:8000/api/v1/post/", sendData);
-        }else {
-          alert("シェアは120文字以内にして下さい。");
-        }
-      })
+        const uid = user.uid;
+        const sendData = {
+          message: this.newShare,
+          uid: uid,
+        };
+        console.log(sendData);
+        this.$axios.post("http://127.0.0.1:8000/api/v1/post/", sendData);
+      });
       this.getContact();
     },
-    created() {
+    async deleteShare(id) {
+      await this.$axios.delete("http://127.0.0.1:8000/api/v1/post/" + id);
       this.getContact();
     },
+    async onLikeClick(post_id) {
+      const sendData = {
+        uid: this.uid,
+        post_id: post_id,
+      };
+      console.log(sendData);
+      await this.$axios.post("http://127.0.0.1:8000/api/v1/like/", sendData);
+      this.getContact();
+    },
+  },
+  created() {
+    this.getContact();
+    this.getUid();
   },
 };
 </script>
@@ -155,14 +187,17 @@ body {
   padding: 10px;
   font-size: 16px;
 }
-.pb_like,.pb_del,.pb_detail{
-  background:none;
-  border:0;
-  cursor:pointer;
+.pb_like,
+.pb_del,
+.pb_detail {
+  background: none;
+  border: 0;
+  cursor: pointer;
   padding: 10px;
-
 }
-.like,.del,.comment {
+.like,
+.del,
+.comment {
   width: 18px;
   vertical-align: middle;
 }
