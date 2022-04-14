@@ -13,14 +13,14 @@
       <h6 class="share">シェア</h6>
       <textarea name="" id="text" cols="40" rows="7" class="text" v-model="newShare"></textarea>
       <div class="share-button">
-        <button @click="insertShare">シェアする</button>
+        <button @click="insertContact">シェアする</button>
       </div>
     </div>
     <div class="share-right">
       <h1 class="share-home">ホーム</h1>
-      <ul>
+      <ul class="lists">
           <li class="list-item" v-for="item in shareLists" :key="item.id">
-              <p class="user_name_content">{{item.user.name}} : 内容</p>
+              <p class="user_name_content">{{item.user.name}} : {{item.message}}</p>
               <button class="pb_like tooltip">
                 <img class="image like" src="heart.png">
                 <p class="like-num">1</p>
@@ -71,12 +71,12 @@ export default {
     },
     async getContact() {
       const resData = await this.$axios.get(
-        "http://127.0.0.1:8000/api/post/"
+        "http://127.0.0.1:8000/api/v1/post/"
       );
       this.shareLists = resData.data.data;
       console.log(resData);
     },
-    async insertShare() {
+    async insertContact() {
       await firebase.auth().onAuthStateChanged((user) => {
         if(user && this.newShare.length <= 120){
           const uid = user.uid
@@ -85,13 +85,15 @@ export default {
             uid:uid,
           };
           console.log(sendData);
-          this.$axios.post("http://127.0.0.1:8000/api/post/", sendData);
+          this.$axios.post("http://127.0.0.1:8000/api/v1/post/", sendData);
         }else {
-          alert("シェアは120文字以内にして下さい。")
+          alert("シェアは120文字以内にして下さい。");
         }
       })
       this.getContact();
-
+    },
+    created() {
+      this.getContact();
     },
   },
 };
@@ -181,4 +183,9 @@ body {
   font-size: 16px;
   padding: 10px;
 }
+.lists {
+  height: 500px;
+  overflow: scroll;
+}
 </style>
+
