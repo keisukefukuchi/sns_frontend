@@ -60,7 +60,7 @@
             <img class="image comment" src="detail.png" />
             <span class="comment-text">コメントを見る</span>
           </button>
-          <p class="post-time">{{ item.created_at }}</p>
+          <p class="post-time">{{ item.created_at | format-date }}</p>
         </li>
       </ul>
     </div>
@@ -80,13 +80,6 @@ export default {
       post_id: null,
     };
   },
-  created() {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.message = "ログイン済みです";
-      }
-    });
-  },
   methods: {
     logout() {
       firebase
@@ -97,13 +90,6 @@ export default {
           this.$router.replace("/");
         });
     },
-    getUid() {
-      firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-          this.uid = user.uid;
-        }
-      });
-    },
     async getContact() {
       const resData = await this.$axios.get(
         "http://127.0.0.1:8000/api/v1/post/"
@@ -112,15 +98,13 @@ export default {
       console.log(resData);
     },
     async insertContact() {
-      await firebase.auth().onAuthStateChanged((user) => {
-        const uid = user.uid;
-        const sendData = {
-          message: this.newShare,
-          uid: uid,
-        };
-        console.log(sendData);
-        this.$axios.post("http://127.0.0.1:8000/api/v1/post/", sendData);
-      });
+      const uid = user.uid;
+      const sendData = {
+        message: this.newShare,
+        uid: uid,
+      };
+      console.log(sendData);
+      await this.$axios.post("http://127.0.0.1:8000/api/v1/post/", sendData);
       this.getContact();
     },
     async deleteShare(id) {
@@ -138,8 +122,13 @@ export default {
     },
   },
   created() {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.message = "ログイン済みです";
+        this.uid = user.uid;
+      }
+    });
     this.getContact();
-    this.getUid();
   },
 };
 </script>
