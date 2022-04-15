@@ -104,6 +104,7 @@ export default {
       };
       console.log(sendData);
       await this.$axios.post("http://127.0.0.1:8000/api/v1/post/", sendData);
+      location.reload();
       this.getContact();
     },
     async deleteShare(id) {
@@ -123,8 +124,11 @@ export default {
   created() {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        this.message = "ログイン済みです";
+        this.message = "ログイン済みです。";
         this.uid = user.uid;
+      }else {
+        alert("ログインしてください。");
+        this.$router.replace("/login");
       }
     });
     this.getContact();
