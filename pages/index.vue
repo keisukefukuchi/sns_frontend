@@ -36,7 +36,7 @@
     <div class="share-right">
       <h1 class="share-home">ホーム</h1>
       <ul class="lists">
-        <li class="list-item" v-for="item in shareLists" :key="item.id">
+        <li class="list-item" v-for="item in reverseLists" :key="item.id">
           <p class="user_name_content">
             {{ item.user.name }} : {{ item.message }}
           </p>
@@ -79,6 +79,11 @@ export default {
       uid: "",
       post_id: null,
     };
+  },
+  computed: {
+    reverseLists() {
+      return this.shareLists.slice().reverse();
+    },
   },
   methods: {
     logout() {
