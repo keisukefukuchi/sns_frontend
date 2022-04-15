@@ -98,10 +98,9 @@ export default {
       console.log(resData);
     },
     async insertContact() {
-      const uid = user.uid;
       const sendData = {
         message: this.newShare,
-        uid: uid,
+        uid: this.uid,
       };
       console.log(sendData);
       await this.$axios.post("http://127.0.0.1:8000/api/v1/post/", sendData);
