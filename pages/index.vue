@@ -50,7 +50,7 @@
           </button>
           <button class="pb_del tooltip">
             <img
-              @click="deleteShare(item.id)"
+              @click="deleteComment(item.id)"
               class="image del"
               src="cross.png"
             />
@@ -119,7 +119,7 @@ export default {
       location.reload();
       this.getContact();
     },
-    async deleteShare(id) {
+    async deleteComment(id) {
       await this.$axios.delete("http://127.0.0.1:8000/api/v1/post/" + id);
       this.getContact();
     },

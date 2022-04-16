@@ -35,14 +35,13 @@
     </div>
     <div class="share-right">
       <h1 class="share-home">コメント</h1>
-      <ul class="lists">
+      <ul>
         <li class="list-item">
           <p class="user_name_content">
             {{ userName }} : {{ message }}
           </p>
           <button class="pb_like tooltip">
             <img
-              @click="onLikeClick(id)"
               class="image like"
               src="heart.png"
             />
@@ -50,7 +49,6 @@
           </button>
           <button class="pb_del tooltip">
             <img
-              @click="deleteComment(id)"
               class="image del"
               src="cross.png"
             />
