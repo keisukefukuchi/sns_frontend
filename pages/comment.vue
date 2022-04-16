@@ -10,7 +10,7 @@
         <img class="image" src="logout.png" />
         <a href="/login" @click="logout">ログアウト</a>
       </div>
-      <h6 class="share">シェア</h6>
+      <h6 class="share">コメント</h6>
       <validation-observer ref="obs" v-slot="ObserverProps">
         <validation-provider v-slot="ProviderProps" rules="required|max:120">
           <textarea
@@ -19,52 +19,49 @@
             cols="40"
             rows="7"
             class="text"
-            v-model="newShare"
+            v-model="newComment"
           ></textarea>
           <div class="error">{{ ProviderProps.errors[0] }}</div>
         </validation-provider>
         <div class="share-button">
           <button
-            @click="insertContact"
+            @click="insertComment"
             :disabled="ObserverProps.invalid || !ObserverProps.validated"
           >
-            シェアする
+            コメントする
           </button>
         </div>
       </validation-observer>
     </div>
     <div class="share-right">
-      <h1 class="share-home">ホーム</h1>
+      <h1 class="share-home">コメント</h1>
       <ul class="lists">
-        <li class="list-item" v-for="item in reverseLists" :key="item.id">
+        <li class="list-item">
           <p class="user_name_content">
-            {{ item.user.name }} : {{ item.message }}
+            {{ userName }} : {{ message }}
           </p>
           <button class="pb_like tooltip">
             <img
-              @click="onLikeClick(item.id)"
+              @click="onLikeClick(id)"
               class="image like"
               src="heart.png"
             />
-            <p class="like-num">{{ item.like_count }}</p>
+            <p class="like-num">{{ like_count }}</p>
           </button>
           <button class="pb_del tooltip">
             <img
-              @click="deleteShare(item.id)"
+              @click="deleteComment(id)"
               class="image del"
               src="cross.png"
             />
           </button>
-          <span class="comment-text">コメント:</span>
-          <button class="pb_detail tooltip">
-            <img
-              class="image comment"
-              src="detail.png"
-              @click="movetoComment(item.id, item.user.name, item.message,item.like_count)"
-            />
-            <span class="comment-text">コメントを見る</span>
-          </button>
-          <p class="post-time">{{ item.created_at | format-date }}</p>
+        </li>
+      </ul>
+      <h3 class="comment-header">コメント欄</h3>
+      <ul class="comment-lists">
+        <li class="comment-list" v-for="item in commentLists" :key="item.id">
+          <h6 class="comment-user">{{item.user.name}}</h6>
+          <p class="comment">{{item.comment}}</p>
         </li>
       </ul>
     </div>
@@ -73,21 +70,17 @@
 
 <script>
 import firebase from "~/plugins/firebase";
-
 export default {
-  props: [],
   data() {
     return {
-      newShare: "",
-      shareLists: [],
+      id: this.$route.query.id,
+      userName: this.$route.query.userName,
+      message: this.$route.query.message,
+      like_count: this.$route.query.like_count,
+      newComment: "",
+      commentLists: [],
       uid: "",
-      post_id: null,
     };
-  },
-  computed: {
-    reverseLists() {
-      return this.shareLists.slice().reverse();
-    },
   },
   methods: {
     logout() {
@@ -99,29 +92,27 @@ export default {
           this.$router.replace("/");
         });
     },
-    movetoComment(id, userName, message,like_count){
-      this.$router.push({path: 'comment', query: {id: id, userName: userName, message: message,like_count:like_count}});
-    },
-    async getContact() {
+    async getComment() {
       const resData = await this.$axios.get(
-        "http://127.0.0.1:8000/api/v1/post/"
+        "http://127.0.0.1:8000/api/v1/comment/"
       );
-      this.shareLists = resData.data.data;
+      this.commentLists = resData.data.data;
       console.log(resData);
     },
-    async insertContact() {
+    async insertComment() {
       const sendData = {
-        message: this.newShare,
+        comment: this.newComment,
         uid: this.uid,
+        post_id: this.id,
       };
       console.log(sendData);
-      await this.$axios.post("http://127.0.0.1:8000/api/v1/post/", sendData);
+      await this.$axios.post("http://127.0.0.1:8000/api/v1/comment/", sendData);
       location.reload();
-      this.getContact();
+      this.getComment();
     },
-    async deleteShare(id) {
-      await this.$axios.delete("http://127.0.0.1:8000/api/v1/post/" + id);
-      this.getContact();
+    async deleteComment(id) {
+      await this.$axios.delete("http://127.0.0.1:8000/api/v1/comment/" + id);
+      this.getComment();
     },
     async onLikeClick(post_id) {
       const sendData = {
@@ -130,20 +121,19 @@ export default {
       };
       console.log(sendData);
       await this.$axios.post("http://127.0.0.1:8000/api/v1/like/", sendData);
-      this.getContact();
+      this.getComment();
     },
   },
   created() {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        this.message = "ログイン済みです。";
         this.uid = user.uid;
       } else {
         alert("ログインしてください。");
         this.$router.replace("/login");
       }
     });
-    this.getContact();
+    this.getComment();
   },
 };
 </script>
@@ -152,7 +142,7 @@ export default {
 body {
   max-width: 1280px;
   height: 100%;
-  background-color: black;
+  background: black;
   color: white;
   margin: 0 auto;
 }
@@ -235,12 +225,25 @@ body {
   font-size: 16px;
   padding: 10px;
 }
-.lists {
-  height: 500px;
-  overflow: scroll;
-}
 .error {
   color: red;
 }
+.comment-header {
+  text-align: center;
+}
+.comment-lists {
+  height: 500px;
+  overflow: scroll;
+}
+.comment-list {
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid white;
+}
+.comment-user {
+  padding: 5px;
+}
+.comment {
+  padding: 5px;
+}
 </style>
-
