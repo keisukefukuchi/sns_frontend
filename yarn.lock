@@ -2462,7 +2462,7 @@ async@^2.6.2:
   dependencies:
     lodash "^4.17.14"
 
-async@^3.2.0, async@^3.2.3:
+async@^3.2.0, async@^3.2.2, async@^3.2.3:
   version "3.2.3"
   resolved "https://registry.yarnpkg.com/async/-/async-3.2.3.tgz#ac53dafd3f4720ee9e8a160628f18ea91df196c9"
   integrity sha512-spZRyzKL5l5BZQrr/6m/SqFdBN0q3OCI0f9rjfBzCMBIP4p75P620rR3gTmaksNOhmzgdxcaxdNfMy6anrbM0g==
@@ -4924,10 +4924,10 @@ find-up@^4.0.0:
     locate-path "^5.0.0"
     path-exists "^4.0.0"
 
-firebase-tools@^10.2.2:
-  version "10.2.2"
-  resolved "https://registry.yarnpkg.com/firebase-tools/-/firebase-tools-10.2.2.tgz#1b6fba6726dd678adcc2f52634e4b9e2051f0fa2"
-  integrity sha512-KJ7C0HeZr01/uKSuU/pJ2ZUAm0OQvujkmdpKurkV4x/JQHh5MeZvCsPC+Zwn4uqTCaSpY1XZt3167c+jscgv7w==
+firebase-tools@^10.6.0:
+  version "10.6.0"
+  resolved "https://registry.yarnpkg.com/firebase-tools/-/firebase-tools-10.6.0.tgz#b53963641cb4eeb232bb0844c22e065366480cd6"
+  integrity sha512-bJvamfCfvgoPixnJQwKdju88u+fWC0fvbQHRD11IPKFH6G9zd41nlAzqP/b9Sh9YjA/MSDpVA7nUnlnipxB01g==
   dependencies:
     "@google-cloud/pubsub" "^2.18.4"
     abort-controller "^3.0.0"
@@ -9625,12 +9625,12 @@ safe-stable-stringify@^2.3.1:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-save@^2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/save/-/save-2.4.0.tgz#af93ff9b3d7a41d0aff49a23433870613a460f9b"
-  integrity sha512-wd5L2uVnsKYkIUaK6i8Ie66IOHaI328gMF0MPuTJtYOjXgUolC33LSIk7Qr8WVA55QHaGwfiVS8a7EFIeGOR3w==
+save@^2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/save/-/save-2.5.0.tgz#426663ca04eeaf87f909656aec52a1ba5d7e6195"
+  integrity sha512-xiVLpKVbx8EmW0HDkNRjYL271OnIRCo8VGWAEq6/K+E0dgNrwKV2xvKXdfPj6HGYA6l760800LyewSY3ooljCg==
   dependencies:
-    async "^2.6.2"
+    async "^3.2.2"
     event-stream "^4.0.1"
     lodash.assign "^4.2.0"
     mingo "1"
