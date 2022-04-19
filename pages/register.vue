@@ -54,10 +54,10 @@ export default {
                   uid:uid
                 };
                 console.log(sendData);
-                this.$axios.post("http://127.0.0.1:8000/api/v1/user", sendData);
+                this.$axios.post("https://whispering-eyrie-21443.herokuapp.com/api/v1/user", sendData);
               }
             });
-            this.$router.replace('/login')
+            this.$router.replace('https://whispering-eyrie-21443.herokuapp.com/login')
           })
         })
         .catch((error) => {
