@@ -54,10 +54,10 @@ export default {
                   uid:uid
                 };
                 console.log(sendData);
-                this.$axios.post("https://whispering-eyrie-21443.herokuapp.com/api/v1/user", sendData);
+                this.$axios.post("https://pure-dawn-96478.herokuapp.com/api/v1/user", sendData);
               }
             });
-            this.$router.replace('https://whispering-eyrie-21443.herokuapp.com/login')
+            this.$router.replace('/login')
           })
         })
         .catch((error) => {

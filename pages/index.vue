@@ -96,7 +96,7 @@ export default {
         .signOut()
         .then(() => {
           alert("ログアウトが完了しました");
-          this.$router.replace("https://whispering-eyrie-21443.herokuapp.com/");
+          this.$router.replace("/");
         });
     },
     movetoComment(id, userName, message,like_count){
@@ -104,7 +104,7 @@ export default {
     },
     async getContact() {
       const resData = await this.$axios.get(
-        "https://whispering-eyrie-21443.herokuapp.com/api/v1/post/"
+        "https://pure-dawn-96478.herokuapp.com/api/v1/post/"
       );
       this.shareLists = resData.data.data;
       console.log(resData);
@@ -115,12 +115,12 @@ export default {
         uid: this.uid,
       };
       console.log(sendData);
-      await this.$axios.post("https://whispering-eyrie-21443.herokuapp.com/api/v1/post/", sendData);
+      await this.$axios.post("https://pure-dawn-96478.herokuapp.com/api/v1/post/", sendData);
       location.reload();
       this.getContact();
     },
     async deleteComment(id) {
-      await this.$axios.delete("https://whispering-eyrie-21443.herokuapp.com/api/v1/post/" + id);
+      await this.$axios.delete("https://pure-dawn-96478.herokuapp.com/api/v1/post/" + id);
       this.getContact();
     },
     async onLikeClick(post_id) {
@@ -129,7 +129,7 @@ export default {
         post_id: post_id,
       };
       console.log(sendData);
-      await this.$axios.post("https://whispering-eyrie-21443.herokuapp.com/api/v1/like/", sendData);
+      await this.$axios.post("https://pure-dawn-96478.herokuapp.com/api/v1/like/", sendData);
       this.getContact();
     },
   },
@@ -140,7 +140,7 @@ export default {
         this.uid = user.uid;
       } else {
         alert("ログインしてください。");
-        this.$router.replace("https://whispering-eyrie-21443.herokuapp.com/login");
+        this.$router.replace("/login");
       }
     });
     this.getContact();
